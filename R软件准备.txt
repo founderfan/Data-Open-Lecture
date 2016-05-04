@@ -1,3 +1,0 @@
-以下是R和Rstudio的下载链接，建议都下载安装
-R主程序：http://cran.rstudio.com/
-Rstudio界面：http://www.rstudio.com/products/rstudio/download/
