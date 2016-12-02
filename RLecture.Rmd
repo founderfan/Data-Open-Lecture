@@ -1,0 +1,1771 @@
+---
+title: "An R Lecture from Practice"
+author: "Fangda Fan"
+date: "Dec 2016"
+output: html_presentation
+---
+
+
+# Numerical R
+## Preparation
+	
+- Bring your laptop.
+- Install [R](https://cloud.r-project.org/) *and* [R-studio](https://www.rstudio.com/products/rstudio/download/)
+- Download the dataset "[Diamonds.csv](https://github.com/founderfan/Lecture-Introduction-of-R)"
+- Be ready to typing in code!
+	 
+
+## Our Goals
+	
+- Know what is R
+- Learn basic operations on R vectors
+- Use R to do scientific computation
+- Learn different data types in R to simplify operations
+	
+
+# What is R
+## What is R?
+    
+- A language and environment for statistical computing and graphics
+- A wide variety of statistical (linear and nonlinear modelling, classical statistical tests, time-series analysis, classification, clustering, ...) and graphical techniques, and is highly extensible.
+- Free Software
+- Polls, surveys of data miners, ... show that R's popularity has increased substantially in recent years. (Wikipedia)
+     
+
+## What can R do?
+    
+- Data: Input, output, cleaning, extracting, summarizing,...
+- Statistical models: random variables and distribution, linear regression, clustering, machine learning, social analysis, ..., nearly all statistical methods that you can think out of
+- Scientific computing: vector and matrix operations, lots of mathematical functions, ...
+- Programming: if, for, while, user-defined functions, ...
+- Presentation: various kinds of plots, LaTeX reports with "knitr"
+- And more ...
+    
+
+## How to begin?
+    
+1. Open the RStudio
+2. Create a new script from File $\rightarrow$ New File $\rightarrow$ R Scripture
+3. Type the code in the upper-left area
+4. Run each line with Ctrl+Enter after finishing it
+    
+
+## Try the power of one-line R Code
+
+```{r fig.height=3, fig.width=6, results = "hide"}
+##    Scatter plot with an one-line code
+plot(speed ~ dist, data = cars)
+##    Linear Regression with an one-line code!
+model = lm(speed ~ dist, data = cars)
+##    Summery with an one-line code!
+summary(model)
+##    Add a line with an one-line code
+abline(model)
+```
+
+## Interpretation
+
+```{r fig.height=3, fig.width=6}
+summary(model)
+```
+
+## Distribution and Random Variables
+
+- We can easily get critical values of given distribution from R
+
+```{r}
+pnorm(2, mean = 0, sd = 1) # Distribution function (normal)
+dnorm(2, mean = 0, sd = 1) # Density function (normal)
+qnorm(0.975, mean = 0, sd = 1) # Quantile function (normal)
+```
+- Generate random sample from a given distribution
+
+```{r}
+set.seed(1234) # Set a random seed to repeat a random experiment
+rnorm(5, mean = 0, sd = 1) # Random sample (normal)
+runif(5, min = 0, max = 1) # Random sample (uniform)
+rbinom(20, size = 5, prob = 0.3) # Random sample (binomial)
+```
+
+
+## Get help
+
+- From R: ? + function
+    
+- ?rnorm
+- ?runif
+- ?lm
+- ?plot
+    
+- From Books: 
+    
+- The Art of R Programming, Norman Matloff
+- An Introduction to Statistical Learning with Applications in R, Gareth James
+    
+- From Google: Your Question + R
+
+
+# Vectorize Operation
+## Vectors
+
+- Generate 5 random variables of uniform distribution between 0 and 1
+
+```{r}
+set.seed(12345)
+x = runif(5, 0, 1)
+x
+x + 1
+```
+- Generate continuous integers from 1 to 5
+
+```{r}
+y = 1:5
+y
+y * 2
+```
+
+
+## Mathematical Operations (1)
+
+- Four arithmetic operations
+
+```{r}
+x + y
+x - y
+x * y
+x / y
+```
+- Power and square root
+
+```{r}
+x ** 2
+sqrt(x)
+```
+
+
+## Mathematical Operations (2)
+
+- Exponential and logarithm
+
+```{r}
+exp(x)
+log(x)
+log10(x)
+```
+- Statistics
+
+```{r}
+sum(x)
+c(sum(x), mean(x), var(x), sd(x)) # Combine values into a vector
+c(median = median(x), minimum = min(x), maximum = max(x)) # named vector
+```
+
+
+## Mathematical Operations (3)
+
+- Quantiles and ranks
+
+```{r}
+quantile(x)
+rank(x)
+```
+- Round
+
+```{r}
+round(x, 3)
+floor(x)
+ceiling(x)
+```
+- Sort
+
+```{r}
+sort(x)
+x
+```
+
+
+## Take Values by Position Index
+
+- Assign the sorted value of x to z
+
+```{r}
+z = sort(x)
+z
+```
+- Get the values of assigned positions from a vector
+
+```{r}
+z[1] # the first value
+z[2:4] # the values of positions from 2 to 4
+z[c(1,4,5)] # the values of positions in 1, 4 and 5
+z[-c(2,3)] # The other values except of the positions in 2 and 3
+```
+
+
+## Logical Operations (1)
+
+- Inequalities
+
+```{r}
+1 == 0 # Whether they are equal
+z > 0.5 # Comparasion for each elements of a vector
+z == x # Pairwise comparasion between two vectors
+z != x # Unequal
+z > x # Greater than
+z <= x # Not greater than
+```
+
+
+## Logical Operations (2)
+
+- And ($\&$): true if both values are true
+
+```{r}
+TRUE & FALSE
+(z > 0.5) & (z < 0.5)
+```
+- Or ($\|$): true if either of them is true
+
+```{r}
+TRUE | FALSE
+(z > 0.5) | (z < 0.5)
+```
+- Not (!): true if the origin value is false
+
+```{r}
+!0 # in R, TRUE/FALSE can be also represented by 1/0
+!(z < 0.5)
+```
+
+
+## Take Values by Logical Index
+
+- Take the values greater than 0.5
+
+```{r}
+z[z > 0.5]
+```
+- Find people with specific pets
+
+```{r}
+people = c("Annas", "Bob", "Charles", "Darrel", "Emma")
+animals = c("cat", "dog", "fish")
+set.seed(123)
+pets = sample(animals, 5, replace = TRUE)
+pets
+people[pets != "fish"] # Who have a pet on the land?
+```
+
+
+# Matrix, List and Data Frame
+## Matrix (1)
+
+- Construct a matrix
+
+```{r}
+m = matrix(c(x, y), nrow = 5) # Construct a matrix from vector x and y
+m
+dim(m) # Dimensions of a matrix
+t(m) # Transpose of a matrix
+```
+
+
+## Matrix (2)
+
+- Matrix algebra
+
+```{r}
+m2 = t(m) %*% m # Matrix multiplication
+m2
+det(m2) # Determinant
+solve(m2) # Inverse of a matrix
+solve(m2, c(12, 16)) # Solve x from Ax = b
+```
+
+
+## Matrix (3)
+
+- Matrix selection
+
+```{r}
+m[3,] # Take the 3rd row
+m[,2] # Take the 2nd column
+m[3,2] # Take the element at row = 3 and column = 2
+m[2:4,c(1,2)] # Take the submatrix from row 2 to 4 and column 1, 2
+```
+
+
+## List
+
+- A list: a set of pairs of key-value
+
+```{r}
+a = list(index = 1:5, name = people)
+a
+a["name"] # A sub-list, not a vector!
+a[["name"]] # This is a right way to take a value.
+a$name # This is another right way to take a value.
+```
+
+
+## Data Frame (1)
+
+- A Data Frame: A special list in a matrix form
+
+```{r}
+a$animals = pets # Add a new element to a list
+a
+data = data.frame(a)
+data
+```
+
+
+## Data Frame (2)
+
+- You can use both matrix and list operations on a data frame, and each column is a list element
+
+```{r}
+data[c("index", "animals")] # Subset columns by name
+data$index # Select a column as a list
+data[2:4, 1:2] # Select rows and columns as a matrix
+```
+
+
+## Marginal Apply}
+
+- apply: apply a function to a matrix by row/column
+
+```{r}
+sum(m)
+apply(m, 1, sum) # Apply a function by row
+apply(m, 2, sum) # Apply a function by column
+```
+- sapply: apply a function to a vector/list by element
+
+```{r}
+sapply(a, length) # Apply a function by list element
+sapply(data, length) # Apply a function by column of data frame 
+```
+
+
+
+# Basic Data Analysis
+## Preparation
+
+- Download the dataset "[Diamonds.csv](https://github.com/founderfan/Lecture-Introduction-of-R)"
+
+
+## Our Goals
+
+- Read real data from files
+- Analyze data with R Data Frame
+- Learn linear regression in R
+
+
+# Read and summarize data
+## Read Data
+Before reading data, we must set the working directory to find the data file:
+
+1. open the "files" tag in the bottom-right area
+2. Find the button "$\cdots$" on the right 
+3. Select the folder where our data files are
+4. Find the "More" button and choose "Set as working directory"
+5. Then read data by read.csv()
+
+```{r}
+data = read.csv("Diamonds.csv")
+dim(data) # check the dimension of data
+```
+
+
+## Summarize Data
+
+- We can summarize the data with str() and summary()
+
+```{r}
+str(data) # Structure of data
+summary(data) # Summary of data
+```
+
+
+## Summarize Discrete Variables
+
+- We can summarize discrete variables by frequency with table()
+
+```{r}
+table(data$color) # Univariate frequency table
+table(data$color, data$cut) # Cross frequency table
+```
+
+
+## Summarize Continuous Variables
+
+- We can summarize continuous variables by statistics and cut()
+
+```{r}
+mean(data$carat) # Mean value
+sd(data$carat) # Standard error
+quantile(data$carat) # Quantiles
+table(cut(data$carat, breaks = 10)) # Frequency counts of equal-length cut
+```
+
+
+## Summarize by Group
+
+- We can summarize data by groups with aggregate() and xtabs()
+
+```{r}
+aggregate(carat ~ cut, data, mean) # summarize by groups
+group = aggregate(carat ~ color + cut, data, mean) # group by multi-index with "+" in formula
+xtabs(carat ~ color + cut, data = group) # expand a 2-D multi-index to a matrix
+```
+
+
+## Define a function: find NA values
+
+- We learn to define a function to find NA values in variables
+
+```{r}
+is.na(c(NA, 0, "a", "", NA))
+countNA = function(x){
+    return(sum(is.na(x)))
+    }
+countNA(c(NA, 0, "a", "", NA))
+sapply(data, countNA)
+```
+
+
+## Two ways to deal with NA values
+
+- Delete the NA rows
+
+```{r}
+data_clean = na.omit(data)
+dim(data_clean)
+sapply(data_clean, countNA)
+```
+- Fill NA values with the median/mean/... of the column
+
+```{r}
+fillNA = function(x){
+    a = median(x, na.rm = TRUE)
+    x[is.na(x) == TRUE] = a
+    return(x)
+}
+data$price = fillNA(data$price)
+sapply(data, countNA)
+```
+
+
+# Plot Data
+## Univariate Plot (1)
+
+- Visualize the distribution of numeric variables by histogram and density
+
+```{r, fig.height=4, fig.width=4}
+hist(data$carat, breaks = 30)
+plot(density(data$carat, width = 0.2), main = "Density Distribution of Carat")
+```
+
+
+## Univariate Plot (2)
+
+- Visualize the distribution of categorical variables by bar-plot
+
+```{r, fig.height=4, fig.width=4}
+qqnorm(log(data$carat), main = "Q-Q Normal Plot of log(Carat)")
+plot(data$color, xlab = "Color", ylab = "N", main = "Distribution of Colors")
+```
+
+
+## Bivariate Plot (1)
+
+- Plot when a numerical variable is grouped by a categorical variable
+
+```{r, fig.height=4, fig.width=4}
+stripchart(depth ~ cut, data = data) # stripchart for small sample size
+boxplot(depth ~ cut, data = data) # boxplot
+```
+
+
+## Bivariate Plot (2)
+
+- Function plot() can treat different types of variables automatically
+
+```{r, fig.height=4, fig.width=4}
+plot(price ~ carat, data = data, cex = 0.5, log = "xy") # scatter plot for both numerical
+plot(color ~ cut, data = data, col = rgb((1:7)/7, (7:1)/7, 1)) # area plot for both categorical
+```
+
+
+# Linear Regression
+## Theory: Linear Regression
+Model: $Y_{n\times 1} = \beta_0 + X_{n\times p}\beta_{p\times 1} + \varepsilon_{n\times 1}$
+
+- $\varepsilon_{n\times 1}=(\varepsilon_1, \varepsilon_2, \cdots, \varepsilon_n)^T\sim^{iid} N(0,\sigma^2),\quad \sigma^2 > 0$
+- Given $Y_{n\times 1} = (y_1, y_2, \cdots, y_n)^T$ and $X_{n\times p} = (X_1, X_2,\cdots, X_p)$
+- Use least squares method to solve $\beta_0$ and $\beta_{p\times 1}=(\beta_1,\beta_2,\cdots,\beta_p)^T$
+
+
+## Single Variable Regression
+
+- Let Y: price, X: carat
+
+```{r, fig.height=4, fig.width=4}
+model = lm(price ~ carat, data = data_clean)
+plot(price ~ carat, data = data_clean, main = "Regression Plot")
+abline(model, col = "red")
+plot(model$residuals ~ model$fitted.values, main = "Residual Plot")
+abline(0,0, col = "red")
+```
+
+
+## Summary of Linear Regression
+
+- Y: price, X: carat(numeric), cut(factor) and interaction (":")
+
+```{r}
+model = lm(price ~ carat + cut + carat:cut, data = data_clean)
+summary(model)
+```
+
+
+## ANOVA Table
+
+- ANOVA table
+
+```{r}
+anova(model)
+```
+- Add source to the model (". " indicates all source in the data/model)
+
+```{r}
+add1(model, ~ . + clarity, test = "F")
+```
+
+
+## Stepwise Selection
+
+- Stepwise selection from all variables from both forward and backward directions
+
+```{r}
+model = lm(price ~ ., data = data_clean)
+model_step = step(model, direction = "both", trace = 0)
+anova(model_step)
+```
+
+
+## More Transformations of Linear Model Variables
+
+- Use "* " in formula for both main effect ("+") and interaction effect (":")
+
+```{r, results = "hide"}
+model_interact = lm(price ~ carat * cut * color, data = data_clean)
+summary(model_interact)
+```
+- Use "-" for deleting source (1 indicates intercept)
+
+```{r, results = "hide"}
+model_reduced = lm(price ~ . - 1 - cut, data = data_clean)
+summary(model_reduced)
+```
+- More transformation of numerical variables: cut, log, polynomial, ...
+
+```{r, results = "hide"}
+model_cut = lm(price ~ cut(carat, breaks = 5) + cut, data = data_clean)
+summary(model_cut)
+model_log = lm(log(price) ~ log(carat) + cut, data = data_clean)
+summary(model_log)
+model_poly = lm(price ~ poly(carat, 3) + cut, data = data_clean)
+summary(model_poly)
+model_poly_raw = lm(price ~ poly(carat, 3, raw = TRUE) + cut, data = data_clean)
+summary(model_poly_raw)
+```
+
+
+# Data Visualization
+## Preparation
+
+- Download the dataset "[Diamonds.csv](https://github.com/founderfan/Lecture-Introduction-of-R)"
+
+
+## Our Goals
+
+- Learn advanced data plot by [ggplot2](http://www.cookbook-r.com/Graphs/), with [cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf) for further reference
+- Learn how to choose various kinds of plot based on variable types
+- Learn to plot with x, y and grouping variables in data.frame
+
+
+# Advanced R Plot: ggplot2
+## ggplot2}
+
+- Read data
+
+```{r}
+data = read.csv("Diamonds.csv")
+```
+- Install by install.packages("ggplot2")
+
+```{r warning=FALSE, fig.height=3, fig.width=4}
+library("ggplot2")
+ggplot(data, aes(x = carat)) + geom_histogram(binwidth = 0.1)
+ggplot(data, aes(x = carat, fill = cut)) + geom_density(alpha = 0.5)
+```
+
+
+## Introduction to ggplot2
+ggplot(data, mapping = aes(x = x, y = y, ...)) + geom...()
+
+- ggplot(data, mapping): prepare data for plot
+- aes(): select variables to map and group fill/color/... by variable
+- geom...(): how we show the data we select in ggplot
+
+```{r warning=FALSE, fig.height=3, fig.width=4}
+ggplot(data, aes(x = carat, y = price)) + geom_point()
+ggplot(data, aes(x = carat, y = price)) + geom_smooth()
+ggplot(data, aes(x = carat, y = price)) + geom_point() + geom_smooth()
+```
+
+
+## Parameters of aes()
+
+- Parameters in aes(...): use variables in data
+
+```{r warning=FALSE, fig.height=3, fig.width=4}
+ggplot(data, aes(x = carat, y = price, color = cut)) + geom_point()
+ggplot(data, aes(x = carat, y = price, color = "blue")) + geom_point()
+ggplot(data, aes(x = carat, y = price)) + geom_point(color = "blue")
+```
+- We can move aes() to anywhere
+
+```{r warning=FALSE, fig.height=3, fig.width=4}
+ggplot(data, aes(x = carat, y = price)) + geom_point(aes(color = cut))
+ggplot(data, aes(x = carat)) + geom_point(aes(y = price, color = "blue"))
+ggplot(data) + geom_point(aes(x = carat, y = price), color = "blue")
+```
+
+
+## Save Plot Elements as R Variables
+
+- We can save ggplot variables as R lists for further use
+
+```{r warning=FALSE, fig.height=3, fig.width=4}
+p = ggplot(data, aes(x = carat, y = price))
+(p = p + geom_point(alpha = 0.1))
+p + geom_smooth(size = 3)
+p + geom_smooth(aes(color = cut), method = "lm")
+```
+
+
+## Add Lines
+
+- Add straight line with geom_abline() and vertical line with geom_vline() 
+
+```{r warning=FALSE, fig.height=3, fig.width=4}
+p + geom_hline(yintercept = 10000)
+p + geom_vline(xintercept = 1:5)
+p + geom_abline(intercept = c(0, 10000), slope = c(5000, 0))
+```
+- Add line with stats
+
+```{r warning=FALSE, message = FALSE, fig.height=3, fig.width=4}
+p + geom_vline(aes(xintercept = mean(carat)))
+p + geom_smooth(method = "lm", se = FALSE)
+p + geom_quantile(quantiles = c(0.25, 0.5, 0.75))
+```
+
+
+# Plots for Different Variable Types
+## Univariate Plot (1): Discrete variable
+
+- Bar plot with geom_bar()
+
+```{r warning=FALSE, fig.height=3, fig.width=4}
+ggplot(data, aes(x = cut)) + geom_bar()
+ggplot(data, aes(x = cut)) + geom_bar(aes(fill = color))
+ggplot(data, aes(x = cut)) + geom_bar(aes(fill = carat > 1), position=position_dodge())
+```
+- Dot plot with geom_dotplot()
+
+```{r warning=FALSE, message = FALSE, fig.height=3, fig.width=4}
+ggplot(data[1:50,], aes(x = cut)) + geom_dotplot()
+ggplot(data[1:50,], aes(x = cut)) + geom_dotplot(aes(fill = color), stackgroups = TRUE)
+ggplot(data[1:50,], aes(x = cut)) + geom_dotplot(aes(fill = carat > 0.3), stackgroups = TRUE)
+```
+
+
+## Univariate Plot (2): Continuous variable
+
+- Histogram and density plot
+
+```{r warning=FALSE, message = FALSE, fig.height=3, fig.width=4}
+ggplot(data, aes(x = depth)) + geom_histogram()
+ggplot(data, aes(x = depth)) + geom_histogram(aes(fill = cut), binwidth = 1)
+ggplot(data, aes(x = depth)) + geom_density()
+ggplot(data, aes(x = depth)) + geom_density(aes(fill = cut), alpha = 0.5)
+```
+- Empirical cdf plot and quantile-quantile plot
+
+```{r warning=FALSE, message = FALSE, fig.height=3, fig.width=4}
+ggplot(data, aes(x = depth)) + stat_ecdf()
+ggplot(data, aes(x = depth)) + stat_ecdf(aes(color = cut))
+ggplot(data, aes(sample = depth)) + stat_qq()
+ggplot(data, aes(sample = depth)) + stat_qq(aes(color = cut))
+```
+
+
+## Univariate Plot (3): Function
+
+- We can plot univariable function using ggplot
+
+```{r warning=FALSE, fig.height=3, fig.width=4}
+ggplot(data.frame(x = c(-5, 5)), aes(x = x)) + stat_function(fun = sin, color = "red")
+ggplot(data.frame(x = c(-1, 1)), aes(x = x)) + stat_function(fun = function(x){return(x^2 - x)})
+ggplot(data.frame(x = c(-5, 5)), aes(x = x)) + stat_function(fun = dnorm, args = list(mean = 2))
+```
+
+
+## Bivariate Plot (1): Two Discrete variables
+
+- Take roughly count with geom_bin2d() and geom_jitter()
+
+```{r warning=FALSE, message = FALSE, fig.height=3, fig.width=4}
+ggplot(data, aes(x = cut, y = color)) + geom_bin2d()
+ggplot(data, aes(x = cut, y = color)) + geom_jitter()
+ggplot(data, aes(x = cut, y = color)) + geom_jitter(aes(color = price), alpha = 0.2)
+```
+
+
+## Bivariate Plot (2): A Continuous and A Discrete
+
+- Box plot and violin plot
+
+
+```{r warning=FALSE, message = FALSE, fig.height=3, fig.width=4}
+ggplot(data, aes(x = cut, y = carat)) + geom_boxplot()
+ggplot(data, aes(x = cut, y = carat)) + geom_boxplot(aes(fill = cut), varwidth = TRUE)
+ggplot(data, aes(x = cut, y = carat)) + geom_violin()
+ggplot(data, aes(x = cut, y = carat)) + geom_violin(aes(fill = cut), scale = "count")
+```
+- 2-D heatmap and jitter plot
+
+
+```{r warning=FALSE, message = FALSE, fig.height=3, fig.width=4}
+ggplot(data, aes(x = cut, y = carat)) + geom_bin2d()
+ggplot(data, aes(x = cut, y = carat)) + geom_jitter()
+ggplot(data, aes(x = cut, y = carat)) + geom_jitter(aes(color = price), alpha = 0.2)
+```
+
+
+## Bivariate Plot (3): Two Continuous Variables
+
+- Point plot and with smooth line
+
+
+```{r warning=FALSE, message = FALSE, fig.height=3, fig.width=4}
+ggplot(data, aes(x = carat, y = price)) + geom_point(size = 1.5, shape = 2)
+ggplot(data, aes(x = carat, y = price)) + geom_point()+geom_smooth(method="lm",formula=y~sqrt(x))
+ggplot(data, aes(x = carat, y = price)) + geom_point(aes(color = cut)) + geom_smooth()
+ggplot(data, aes(x = carat, y = price, color = cut)) + geom_point(aes(size=color))+geom_smooth()
+```
+- 2-D heatmap, density, ellipses and marginal rug
+
+
+```{r, warning=FALSE, message = FALSE, fig.height=3, fig.width=4}
+ggplot(data, aes(x = carat, y = price)) + geom_bin2d()
+ggplot(data, aes(x = carat, y = price)) + geom_point() + geom_density_2d()
+ggplot(data, aes(x = carat, y = price)) + geom_point() + stat_ellipse(aes(color = carat > 2))
+ggplot(data, aes(x = carat, y = price)) + geom_point() + geom_rug(aes(color = cut))
+```
+
+
+## Trivariate Plot: 2D summary
+
+- Summary z grouped by x and y
+
+```{r, warning=FALSE, message = FALSE, fig.height=3, fig.width=4}
+ggplot(data, aes(x = table, y = depth, z = price)) + stat_summary_2d()
+ggplot(data, aes(x = table, y = depth, z = price)) + stat_summary_2d(binwidth = c(1, 1))
+ggplot(data, aes(x = table, y = depth, z = price)) + stat_summary_2d(fun = sd)
+```
+
+
+# Layouts}
+## Axes, labels and themes
+
+- Transform and flip coordinate axes
+
+```{r warning=FALSE, message = FALSE, fig.height=3, fig.width=4}
+p = ggplot(data, aes(x = carat, y = price)) + geom_point()
+p + coord_trans(x="sqrt", y = "log10")
+p + coord_trans(limx=c(0, 2), limy = c(0, 10000))
+p + coord_flip()
+```
+- Change title and axis labels, themes
+
+```{r warning=FALSE, message = FALSE, fig.height=3, fig.width=4}
+p + labs(title = "Price ~ Weight", x = "Weight(carat)", y = "Price")
+p + theme_bw()
+p + theme_classic()
+```
+
+
+## Facet
+
+- Make ggplot facet with facet_grid(facets = formula)
+
+```{r warning=FALSE, message = FALSE, fig.height=4, fig.width=5}
+p + facet_grid(. ~ cut)
+p + facet_grid(cut ~ color)
+```
+
+
+## Scales and Margins in Facet
+
+- We can adjust scales and margins in facet_grid()
+
+```{r warning=FALSE, message = FALSE, fig.height=4, fig.width=5}
+p + facet_grid(. ~ color, scales = "free")
+p + facet_grid(cut ~ color, margins = TRUE)
+```
+
+
+# Data Operation
+## Preparation
+
+- Download the [dataset](https://github.com/founderfan/Lecture-Introduction-of-R) "Diamonds.csv"
+
+
+## Our Goals
+
+- Learn data operations simplified by [data.table](http://user014.stat.ucla.edu/files/tutorial_Matt.pdf)
+- Learn how to summarize information of variables for cleaning 
+- Learn to design steps for data cleaning in data table
+- Learn how to use function/for/if and other structures in R working procedure
+
+
+# Data Table}
+## Data Table: A Poweful Extension of Data Frame
+
+- Install by install.packages("data.table")
+
+```{r}
+library("data.table")
+data = fread("Diamonds.csv")
+str(data)
+summary(data)
+```
+
+
+## Take Subset from Data Table
+
+- Take subset like data.frame, but using list to contain variables
+
+```{r}
+data[2:4, list(n, carat, price)] # select row 2 to 4 and column (n, carat, x)
+```
+- Use .N as the length of data, and operations in columns
+
+```{r}
+data[5:.N, list(n, unit_price = price/carat)]
+```
+
+
+## Introduction of Data Table
+
+- data.table has the form: data[i, j, by = ...] like SQL
+
+```{r}
+data[i = price > 1000, j = list(count = .N, carat = mean(carat)), by = list(cut)] 
+```
+
+```{r}
+library(knitr)
+kable(data.frame(R = c("i", "j", "by"), SQL = c("WHERE", "SELECT", "GROUP BY")))
+```
+- data.table is faster than R default, especially with big data
+
+```{r}
+system.time(read.csv("Diamonds.csv")) # timing (second): read csv with R default
+system.time(fread("Diamonds.csv")) # timing (second): read csv with data.table
+```
+
+
+## Sort Data Table
+
+- Sort data by setkey()
+
+```{r}
+setkey(data, cut)
+data[,list(n,cut)]
+```
+- Select rows by key value directly
+
+```{r} 
+data["Good", .N]
+data["Good", mult = "first"]
+```
+
+
+## Column Apply in Data Table
+
+- Apply functions into each column with lapply and .SD
+
+```{r}
+class(data[, price])
+data[,lapply(.SD, class)]
+```
+- Take a subset of columns with .SDcols
+
+```{r}
+data[,lapply(.SD, class), .SDcols = -c(2:5)]
+```
+
+
+
+# Data Summarization
+## Data Summarization
+Goal: Summarize the characters of many variables of big data
+
+- Amount of Information vs. Readability
+- Various Variable Types vs. General Method/Representation
+- Elaboration vs. Quickness/Easiness
+
+Our Solution: Use data.table to convert each variable into key statistics, and create a new summarized data.table
+
+## Summarize Variables (1): Type and Size
+
+- First identify the type of each variable
+
+```{r}
+data[,lapply(.SD, class)]
+```
+- count NA values of each variable
+
+```{r}
+x = data[,price]
+nonNA = function(x){
+    return(sum(!is.na(x)))
+}
+nonNA(data[,price])
+data[,lapply(.SD, nonNA)] # count of non-NA values of variables
+```
+
+## Summarize Variables (2): Numeric Statistics
+
+- Convert numeric variable into numeric statistics
+
+```{r}
+summary_num = function(x){
+    if(class(x) == "character")
+        return(NA)
+    else
+        x_trans = c(mean(x, na.rm = T), sd(x, na.rm = T), quantile(x, na.rm = T))
+    return(x_trans)
+}
+summary_num(data[,price])
+data[,lapply(.SD, summary_num)]
+```
+
+
+## Summarize Variables (3): Frequency Table
+
+- We create a function to get the most 5 frequent values
+
+```{r}
+summary_value = function(x){
+    freq = sort(table(x), decreasing = TRUE)
+    return(names(freq)[1:5])
+}
+data[,lapply(.SD, summary_value)]
+```
+- Get the frequency of most 5 frequent values, tail and NA
+
+```{r}
+summary_freq = function(x){
+    freq = sort(table(x), decreasing = TRUE)
+    return(c(freq[1:5], sum(freq[-(1:5)]), sum(is.na(x))))
+}
+data[,lapply(.SD, summary_freq)]
+```
+
+
+## Summarize Variables (4): Merge
+
+- Use a list to collect these summaries, each reorganized by variable names as index
+
+```{r}
+fL = list(class, nonNA, summary_num, summary_value, summary_freq)
+summaryL = list()
+for(i in 1:length(fL)){
+    summaryL[[i]] = data[,lapply(.SD, fL[[i]])]
+    summaryL[[i]] = data.table(t(summaryL[[i]]), keep.rownames=TRUE)
+    setkey(summaryL[[i]], rn)
+}
+```
+- Merge a list of data.tables into one data.table with Reduce()
+
+```{r}
+summary_data = Reduce(function(X,Y){X[Y]}, summaryL)
+colnames(summary_data) = c("variable", "type", "N", 
+                                                     "mean", "sd", "min", "Q1", "median", "Q3", "max", 
+                                                     paste("value", 1:5), paste("freq", c(1:5, "others", "NA")))
+write.csv(summary_data, "Rlecture_Diamonds_summary.csv", row.names = FALSE, na = "")
+```
+
+
+# Data Cleaning
+## Why Data Cleaning
+
+- A key step to prepare big data for machine learning prediction
+- Standardize raw data for statistical models to understand:
+    
+- For programming generalization: convert data to numeric matrices for general-model use (beyond linear models in R)
+- Solve mathematical problems in data: sparsity, outliers, ...
+    
+- Difficulty: the size and complexity of variables in data
+
+```{r}
+# data_big = fread("Rlecture_loan.csv")
+# str(data_big)
+# summary(data_big)
+```
+
+\begin{table}
+\footnotesize
+\begin{tabular}{c c c c}
+    Variable Problem & Example & Model Effect & Test\\
+    \hline
+    Non-numeric & characters, time & Error, Info loss & Data Type\\
+    Sparsity & Identical values & Noise & Count Frequency\\
+    Collinearity & Two similar variables& Instability & Correlation Matrix\\
+    NA values & NA, NA notations& Error & Count NAs\\
+    Distribution Bias & exponential, outliers & Instability & Numeric statistics
+\end{tabular}
+\end{table}
+
+## Data Cleaning (1): Numeralization
+
+Our Goal: Convert all non-numeric variables into numeric varibles
+
+- Non-numeric variables with prior information (ordinal, time, ...) $\rightarrow$ map into numeric values with a key-value data.table
+
+```{r results = "hide"}
+mapDT = data.table(c("Fair", "Good", "Very Good", "Premium", "Ideal"), 1:5, key = "V1")
+setkey(data, "cut")
+op = data[mapDT]
+data[, cut := op[,V2]]
+```
+- All other non-numeric variables $\rightarrow$ 0-1 dummy variables
+
+```{r}
+options(na.action='na.pass')
+data_clean = data.table(model.matrix( ~ . , data = data))
+dim(data_clean)
+```
+
+
+## Data Cleaning (2): Detect and Delete Sparse Variables
+
+- Check the number of NAs and most frequent values of each variable, define it as sparity
+
+```{r}
+# data_clean[,lapply(.SD, summary_freq)]
+sparsity = function(x){
+    op = sort(table(x), decreasing = TRUE)[1] + sum(is.na(x))
+    return(op/length(x))
+}
+(sparse = data_clean[ , lapply(.SD, sparsity)])
+```
+- Delete all variables with sparsity nearly 1
+
+```{r}
+data_clean = data_clean[, data_clean[ ,sparse < 0.9999], with = FALSE]
+dim(data_clean)
+```
+
+
+## Data Cleaning (3a): Detect Collinear Variables
+
+- Use correlation matrix to detect collinearity
+
+```{r fig.height=4, fig.width=4}
+cm = cor(data_clean, use = "pairwise.complete.obs")
+heatmap(cm, col = rainbow(100), scale = "none")
+write.csv(cm, "Rlecture_Diamonds_cm.csv")
+##    Then open "Rlecture_Diamonds_cm.csv" in Microsoft Excel (2010+):
+##    Ctrl+A -> tag: Home -> Conditional Formatting -> Color Scales
+```
+
+
+## Data Cleaning (3b): Delete Collinear Variables
+
+- Delete collinear variables with lower triangular of correlation matrix
+
+```{r}
+(collinear = apply(lower.tri(cm) & (abs(cm) > 0.95), 1, sum))
+data_clean = data_clean[, (names(collinear)[collinear == 0]), with = FALSE]
+dim(data_clean)
+```
+
+
+## Data Cleaning (4): Fill NAs
+
+- Check NA values
+
+```{r}
+data_clean[, lapply(.SD, function(x){sum(is.na(x))})]
+```    
+- Fill NA values with the median/mean/0/... of the column (Not necessary for predicted variable Y)
+
+```{r}
+fillNA = function(x){
+    a = median(x, na.rm = TRUE)
+    x[is.na(x) == TRUE] = a
+    return(x)
+}
+data_clean = data_clean[, lapply(.SD, fillNA)]
+```
+
+
+## Data Cleaning (5): Distribution Normalization
+
+- One method: Standardize all variables with mean 0 and standard deviation 1
+
+```{r}
+data_clean = data_clean[, lapply(.SD, function(x){(x - mean(x))/sd(x)})]
+``` 
+- Another method: Standardize all variables to satisfy standard normal distributioon
+
+```{r}
+data_clean = data_clean[, lapply(.SD, function(x){qnorm((frank(x)-0.5)/length(x))})]
+```
+
+
+# Network Analysis
+## Preparation
+
+- Download the dataset "[Rlecture_data_facebook.txt](https://github.com/founderfan/Lecture-Introduction-of-R)"
+
+
+## Our Goals
+
+- Learn network analysis in R with [igraph](http://kateto.net/netscix2016)
+- Learn some basic concepts and methods to analyze a network
+- Learn ERGM, a regression for network structure
+
+
+# Introduction to Network
+## Network Analysis
+
+- There are many kinds of networks in the society: classmates, friends, telephones, business transactions,...
+    
+- How they are same with and different from each other? 
+- When we want to compare them, we need to represent them in a uniform way.
+    
+- Network (graph) representation in mathematics $G = (V, E)$
+    
+- $G$ (Graph): the whole network 
+- $V$ (Vertex): the nodes of network (people, companies, ...)
+- $E$ (Edges): the connection between nodes (friendship, transactions, ...)
+    
+
+
+## An R Network Analysis Package: igraph
+
+- Install by install.packages("igraph")
+
+```{r warning=FALSE, message=FALSE, fig.height=6, fig.width=8}
+library("igraph")
+g = graph(edges = c(1,2, 2,3, 1,3, 4,1), n = 6)
+plot(g)
+g
+V(g)
+E(g)
+g_namev = graph(edges = c("a","b", "b","c", "a","c", "d","a"))
+plot(g_namev)
+```
+
+
+## Directed and Undirected k-Stars
+
+- We can also create simple graphs by graph.formula()
+
+```{r warning=FALSE, message=FALSE, fig.height=6, fig.width=8}
+g_staru = graph.formula(B:C:D - A) # Undirected 3-Stars
+plot(g_staru)
+g_starb = graph.formula(B:C:D + A) # Bidirectional 3-Stars
+plot(g_starb) 
+```
+- Create one-sided directed graph with "+" on one side of "-"s
+
+```{r warning=FALSE, message=FALSE, fig.height=6, fig.width=8}
+g_stari = graph.formula(B:C:D ---+ A) # In-directed 3-Stars
+plot(g_stari)
+g_staro = graph.formula(B:C:D +- A) # Out-directed 3-Stars
+plot(g_staro)
+```
+
+
+## Some Other Basic Components of a Graph
+
+- Tree graph and fully-connected graph
+
+```{r warning=FALSE, message=FALSE, fig.height=6, fig.width=8}
+g_tree = graph.formula(A - B - C:D:E, A - F - G:H:I, A - J - K:M:L) # Tree Graph
+plot(g_tree)
+g_full = graph.formula(A:B:C:D + A:B:C:D) # Fully-connected Graph
+plot(g_full)
+```
+- Ring graph and isolated graph
+
+```{r warning=FALSE, message=FALSE, fig.height=6, fig.width=8}
+g_ring = graph.formula(A -+ B -+ C -+ D -+ A) # Ring Graph
+plot(g_ring)
+g_empty = graph.formula(A:B:C:D) # Graph of Isolated Points
+plot(g_empty)
+```
+
+
+## Demo Tutorial of Igraph
+
+- Find and run the demo in igraph
+
+```{r warning=FALSE, eval=FALSE, fig.height=6, fig.width=8}
+demo(package = "igraph")
+demo("centrality", package = "igraph")
+```
+- Use interactive version igraphdemo()
+
+```{r warning=FALSE, eval=FALSE, fig.height=6, fig.width=8}
+igraphdemo("centrality")
+```
+
+
+# Summarize Network
+## Read Network Data
+
+- Data: A sample of 4000+ Facebook friends (mutual)
+
+```{r warning=FALSE, message=FALSE, results="hide", fig.height=6, fig.width=8}
+datag = read.graph("Rlecture_data_facebook.txt", format = "edgelist")
+datag = as.undirected(datag)
+datag
+```
+- Take a subgraph from the original graph for analysis
+
+```{r warning=FALSE, message=FALSE, results="hide", fig.height=6, fig.width=8}
+datag_sub = induced.subgraph(datag, 1:50)
+datag_sub
+V(datag_sub)
+E(datag_sub)
+plot(datag_sub, vertex.size = 10, edge.arrow.size = 0.3)
+```
+
+
+## Neighbour and Path}
+
+- Neighbours: The set of vertices directly connected to a vertex
+
+```{r warning=FALSE, message=FALSE, fig.height=6, fig.width=8}
+V(datag)[nei(1)] # The vertices vertex 1 is connected with
+```
+- The shortest path to pass from one vertex to another vertex
+
+```{r warning=FALSE, message=FALSE, fig.height=6, fig.width=8}
+shortest.paths(datag, v = 4, to = 10) # The shortest path from vertex 4 to vertex 10
+shortest.paths(datag, v = 1:5, to = 1:10) # The shortest path from vertex 1~5 to vertex 1~10
+```
+
+
+## Adjacency Matrix
+
+- Adjecency Matrix: the existence of edge between any two vertices
+
+```{r warning=FALSE, message=FALSE, fig.height=6, fig.width=8}
+am = get.adjacency(datag)
+am[1:10, 1:10]
+```
+- Matrix power of adjecency matrix $A^p$: the total number of p-path between any two vertices
+
+```{r warning=FALSE, message=FALSE, results = "hide", fig.height=6, fig.width=8}
+am2 = am%*%am
+am2[1:10, 1:10]
+```
+
+
+## Measurements of Network Centrality (1)
+
+- Degree $C_D(v)$: the number of edges of a vertex
+
+```{r warning=FALSE, message=FALSE, fig.height=6, fig.width=10}
+vdegree = degree(datag)
+head(vdegree) # The degree of first 6 vertices
+which.max(vdegree) # The vertex name with the highest degree
+max(vdegree) # The highest degree of the network
+```
+- Betweenness $C_B(v) = \sum_{i, j\in V\backslash\{v\}}\frac{\#\arg_v d(i,j)}{\#\arg d(i,j)}$
+
+```{r warning=FALSE, message=FALSE, fig.height=6, fig.width=8}
+vbetween = betweenness(datag)
+head(vbetween)
+which.max(vbetween)
+max(vbetween)
+```
+
+
+## Measurements of Network Centrality (2)
+
+- Closeness $C(v) = \sum_{i\in V\backslash\{v\}}\frac{1}{d(i,v)}$
+
+```{r warning=FALSE, message=FALSE, fig.height=6, fig.width=8}
+vclose = closeness(datag)
+head(vclose)
+which.max(vclose)
+max(vclose)
+```
+- Page Rank in Google
+
+```{r, warning=FALSE, message=FALSE, fig.height=6, fig.width=8}
+vpagerank = page.rank(datag)
+head(vpagerank$vector)
+which.max(vpagerank$vector)
+max(vpagerank$vector)
+```
+
+
+## Comparison between Network Centrality
+
+- We compare 4 measurements of network centrality
+
+```{r, warning=FALSE, message=FALSE, fig.height=6, fig.width=8}
+library(data.table)
+vcentral = data.table(vertex = V(datag), degree = vdegree, betweenness = vbetween,
+                     closeness = vclose, pagerank = vpagerank$vector) # data.table of vertex centrality
+setkey(vcentral, degree) # Sort by degree centrality
+vcentral[,lapply(.SD, frank), .SDcols = -1] # Comparsion by rank
+cor(vcentral[, -1, with = FALSE], method = "spearman") # Correlation matrix of rank (Spearman)
+```
+
+
+# Network Regression
+## Random Graph
+
+- Random graph: edges randomly generated with probability p
+
+```{r warning=FALSE, message=FALSE, fig.height=6, fig.width=8}
+set.seed(1)
+plot(random.graph.game(50, p = 0.01))
+plot(random.graph.game(50, p = 0.03))
+plot(random.graph.game(50, p = 0.05))
+```
+
+```{r warning=FALSE, message=FALSE, fig.height=6, fig.width=8}
+plot(random.graph.game(50, p = 0.1))
+plot(random.graph.game(50, p = 0.3))
+plot(random.graph.game(50, p = 0.5))
+```
+
+
+## Exponential Random Graph Model (ERGM)
+
+- Generate a new random graph based on shapes of network
+- Assumption: the structure of a network $y$ can be represent as a exponential random graph with the number of shapes $s(y) = (s_1(y),...,s_k(y))$ as statistics and $\beta = (\beta_1, ..., \beta_k)$ as coefficient 
+- Let $\beta = \hat{\beta}$ maximize $P(Y = y|\beta) = \exp\left\{\frac{1}{c}\sum_{j=1}^k \beta_j s_j(y) - c_1(\beta) - c_2(y) \right\}$
+- Linear regression: Let $\beta = \hat{\beta}$ maximize $f(Y = y|\beta, X) = \exp\left\{\frac{1}{\sigma^2}\sum_{j=1}^p \beta_j (x_j^T y) - c_1(\beta, X) - c_2(y)\right\}$
+
+
+## ERGM and Network Package
+
+- Install by install.packages("ergm")
+
+```{r warning=FALSE, message=FALSE, fig.height=6, fig.width=8}
+library(ergm)
+data_edgelist = get.edgelist(datag)
+datan = network(data_edgelist, directed = FALSE)
+class(datag)
+class(datan)
+```
+- We calculate the probability coefficient of edges for network
+
+```{r warning=FALSE, message=FALSE, fig.height=6, fig.width=8}
+model_ergm1 = ergm(datan ~ edges, estimate = "MPLE")
+model_ergm1
+```
+
+
+## Summary of ERGM
+
+- All coefficients in ERGM represents an exponential magnitude in probability
+
+```{r warning=FALSE, message=FALSE, fig.height=6, fig.width=8}
+summary(model_ergm1)
+```
+
+
+## Terms of ERGM (1)
+To test the effect of a complex term, we must add all simpler terms to the model
+
+- k-stars represent the concentration of relationships
+
+```{r warning=FALSE, message=FALSE, fig.height=6, fig.width=8}
+model_ergm2 = ergm(datan ~ edges + kstar(2:3), estimate = "MPLE")
+summary(model_ergm2)
+```
+
+
+## Terms of ERGM (2)
+
+- Triangles represent a smallest clique in the network
+
+```{r warning=FALSE, message=FALSE, fig.height=6, fig.width=8}
+model_ergm3 = ergm(datan ~ edges + kstar(2:3) + triangle, estimate = "MPLE")
+summary(model_ergm3)
+```
+
+
+## Terms of ERGM (3): More Terms
+We can also add [more terms](http://www.inside-r.org/packages/cran/ergm/docs/absdiff) to ERGM
+
+- concurrent: vertices with degree 2 or more
+
+```{r eval=FALSE, fig.height=6, fig.width=8}
+model_ergm4 = ergm(datan ~ edges + concurrent, estimate = "MPLE")
+summary(model_ergm4)
+```
+- threetrail: a path of 3 connected edges
+
+```{r eval=FALSE, fig.height=6, fig.width=8}
+model_ergm5 = ergm(datan ~ edges + kstar(2) + threetrail, estimate = "MPLE")
+summary(model_ergm5)
+```
+- cycle(k): a ring of k edges. In an undirected graph, cycle(3) are triangles, and cycle(4) are squares
+
+```{r, eval=FALSE, fig.height=6, fig.width=8}
+model_ergm6 = ergm(datan ~ edges + kstar(2:3) + threetrail + cycle(3:4), estimate = "MPLE")
+summary(model_ergm5)
+```
+
+
+# R Introduction Review
+## Preparation
+
+- Download the dataset "[Diamonds.csv](https://github.com/founderfan/Lecture-Introduction-of-R)"
+
+
+## Our Goals
+
+- Review the contents of first 4 lecture that we learned
+- Be familiar with package "data.table" and "ggplot2" in R data analysis
+
+
+# R Basic
+## Vectors
+
+- Create vectors with different methods
+
+```{r}
+x = seq(0, 3, length.out = 6)
+x
+y = rep(c("a", "b"), 3)
+y
+set.seed(1)
+z = runif(6, min = 0, max = 1) # Distribution function (normal)
+z
+```
+- Select/revise elements of vectors by position and logical index
+
+```{r}
+x[c(1, 3, 5)]
+x[y == "a"] = 1
+x
+```
+
+
+## Vector Functions
+
+- Use vector functions to operate on vectors
+
+```{r}
+x ^ 2
+pnorm(x, mean = 0, sd = 1)
+sum(x)
+```
+- Use paste function to operate on characters
+
+```{r}
+y1 = paste(y, x, sep = "_")
+y1
+substr(y1, start = 1, stop = 3)
+```
+
+
+## Matrix
+
+- Construct a matrix by a vector
+
+```{r}
+m = matrix(c(x, z), nrow = 4)
+m
+```
+- Select/revise elements of a matrix
+
+```{r}
+m[, 2]
+m[1:3, 2:3] = 5
+m
+```
+
+
+## Matrix Functions
+
+- Matrix calculation
+
+```{r}
+m2 = t(m) %*% m
+dim(m2)
+det(m2)
+```
+- Apply vector functions on matrices by column/row
+
+```{r}
+apply(m, 1, sum)
+```
+- Bind matrices by column/row: cbind()/rbind()
+
+```{r}
+cbind(m, m)
+```
+
+
+
+## List
+
+- Construct a list with key-value pairs
+
+```{r}
+d = list(a = x, b = y, c = m2)
+d
+```
+- Select a sublist and revise elements of a list
+
+```{r}
+d[c("a", "b")]
+d$c = z
+d[["c"]]
+```
+
+
+## List Functions
+
+- lapply/sapply: use functions on each elements of a list
+
+```{r}
+lapply(d, length)
+sapply(d, length)
+```
+
+
+## Data Frame
+
+- Create a data.frame from a list of equal-length vectors
+
+```{r}
+data = data.frame(d)
+data
+```
+- We can select from a data.frame like matrix and list 
+
+```{r}
+data[4:5, ]
+data$a
+data[data$b == "a", c("b", "c")]
+```
+
+
+## Data Frame Functions
+
+- Create a data.frame from a list of equal-length vectors
+
+```{r}
+dim(data)
+```
+- Use either apply for a matrix or lapply/sapply for a list
+
+```{r}
+apply(data[,-2], 2, sum)
+apply(data[,-2], 1, sum)
+sapply(data[,-2], sum)
+```
+
+
+# R Data Description
+## Data Table: A Poweful Extension of Data Frame
+
+- Read data
+
+```{r}
+library("data.table")
+data = fread("Diamonds.csv")
+```
+- Summarize with str() and summary()
+
+```{r eval = FALSE}
+str(data)
+summary(data)
+```
+- Select rows and columns from a data.table
+
+```{r}
+data[4:7, list(n, carat, price)]
+data[rank(price) <= 5, list(n, carat, price, unit_price = price/carat)]
+```
+
+
+## ggplot2: An Advanced Plot for Data Frame
+ggplot(data, mapping = aes(x = x, y = y, ...)) + geom...()
+
+- ggplot(data, mapping): prepare data for plot
+- aes(): select variables to map (x,y) and groupby (fill/color/...)
+- geom...(): how we show the data we select in ggplot
+
+```{r warning=FALSE, message = FALSE, fig.height=3, fig.width=5}
+library("ggplot2")
+ggplot(data, aes(x = carat, y = price)) + geom_point()
+ggplot(data, aes(x = carat, y = price)) + geom_smooth()
+ggplot(data, aes(x = carat, y = price)) + geom_point() + geom_smooth()
+```
+
+```{r warning=FALSE, message = FALSE, fig.height=3, fig.width=6}
+ggplot(data, aes(x = carat, y = price)) + geom_point(color = "blue")
+ggplot(data, aes(x = carat, y = price, color = cut)) + geom_point()
+```
+
+
+## Frequency and Distribution
+
+- Plot: bar$\rightarrow$categorical and histogram/density$\rightarrow$numeric
+
+```{r warning=FALSE, message = FALSE, fig.height=3, fig.width=4}
+ggplot(data, aes(x = cut)) + geom_bar(aes(fill = color))
+ggplot(data, aes(x = cut)) + geom_bar(aes(fill = price > 1000), position=position_dodge())
+ggplot(data, aes(x = carat)) + geom_histogram(aes(fill = cut), binwidth = 0.1)
+ggplot(data, aes(x = carat)) + geom_density(aes(fill = cut), alpha = 0.5)
+```
+- Counting in data.table, use .N (the length) and by = ...
+
+```{r warning=FALSE, message = FALSE, fig.height=3, fig.width=6}
+data[, list(count = .N), by = cut]
+data[, list(count = .N), by = list(carat = cut(carat, breaks = 3))]
+```
+
+
+## Groupby in Data Table
+
+- data.table has the form: data[i, j, by = ...]
+
+```{r}
+data[i = price > 1000, j = list(count = .N, mean = mean(carat), sd = sd(carat))]
+data[i = price > 1000, j = list(count = .N, mean = mean(carat), sd = sd(carat)), by = list(cut)]
+```
+- Groupby functions in data.table, ggplot2 and SQL (a database language)
+
+\begin{tabular}{c|c c c}
+\hline
+    R (data.table) & i & j & by\\\hline
+    R (ggplot2) & & aes(x, y) & aes(color/fill/...)\\\hline
+    SQL & WHERE & SELECT & GROUP BY\\\hline
+\end{tabular}
+
+## Column Apply in Data Table
+
+- Apply on each column in data.table with lapply(.SD, function)
+
+```{r}
+data[,lapply(.SD, class)]
+```
+- We can also define functions for use
+
+```{r}
+summary_num = function(x){
+    if(class(x) == "character") return(NA)
+    else return(c(mean = mean(x, na.rm = T), sd = sd(x, na.rm = T), quantile(x, na.rm = T)))
+}
+summary_num(data[,price])
+data[,lapply(.SD, summary_num)]
+```
+
+
+# R Linear Model
+## Linear Model and Residuals
+
+- Build a linear model in R with lm(formula = ..., data)
+
+```{r warning=FALSE, results = "hide", fig.height=3, fig.width=5}
+options(na.action = 'na.exclude')
+model = lm(price ~ carat, data = data)
+summary(model)
+```
+- Use plot for residual analysis
+
+```{r warning=FALSE, message = FALSE, fig.height=5, fig.width=5}
+plot(model)
+```
+
+
+## Variable Transformation
+
+- We can use transformation functions on x and y
+
+```{r warning=FALSE, eval = FALSE, fig.height=3, fig.width=4}
+
+model_log = lm(price ~ log(carat), data = data)
+summary(model_log)
+model_cut = lm(price ~ cut(carat, 5), data = data)
+summary(model_cut)
+model_poly1 = lm(price ~ poly(carat, 3), data = data)
+summary(model_poly1)
+model_poly2 = lm(price ~ poly(carat, 3, raw = TRUE), data = data)
+summary(model_poly2)
+```
+- Use ggplot to plot univariate linear models
+
+```{r warning=FALSE, message = FALSE, fig.height=3, fig.width=4}
+ggplot(data, aes(x=carat,y=price)) + geom_point() + geom_smooth(method="lm")
+ggplot(data, aes(x=carat,y=price)) + geom_point() + geom_smooth(method="lm", formula=y~log(x))
+ggplot(data, aes(x=carat,y=price)) + geom_point() + geom_smooth(method="lm", formula=y~cut(x,5))
+ggplot(data, aes(x=carat,y=price)) + geom_point() + geom_smooth(method="lm", formula=y~poly(x,3))
+```
+
+
+## Multivariate Linear Models and ANOVA
+
+- Use "+": adding variables, ":": interaction, and "*": for both
+
+```{r warning=FALSE, results = "hide", fig.height=3, fig.width=4}
+model1 = lm(price ~ carat + cut + carat:cut, data = data)
+summary(model1)
+model2 = lm(price ~ carat*cut, data = data)
+summary(model2)
+```
+- Use ANOVA to test the effect of multi variables in the linear model
+
+```{r warning=FALSE, message = FALSE, fig.height=3, fig.width=4}
+anova(model1)
+```
+
+
+## High-Dimensional Variables and Selection
+
+- Put all variables except n into the model, ".": all other variables, "-": remove a variable
+
+```{r warning=FALSE, results = "hide", fig.height=3, fig.width=4}
+model_all = lm(price ~ . - n, data = data)
+summary(model_all)
+```
+- Stepwise selection with both forward and backward method
+
+```{r warning=FALSE, message = FALSE, fig.height=3, fig.width=4}
+model_step = step(model_all, direction = "both", trace = 0)
+anova(model_step)
+```
