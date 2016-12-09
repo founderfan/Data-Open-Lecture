@@ -1,19 +1,27 @@
 ---
-title: "An R Lecture from Practice"
+title: "Data Open Lecture: An Introduction of R"
 author: "Fangda Fan"
 date: "Dec 2016"
-output: html_presentation
+output: slidy_presentation
 ---
 
+## Contents
 
-# Numerical R
+1. Numerical R
+2. Basic Data Analysis
+3. Data Visualization
+4. Data Operation
+5. Network Analysis
+6. R Introduction Review
+
+# Lecture 1. Numerical R
+
 ## Preparation
 	
 - Bring your laptop.
 - Install [R](https://cloud.r-project.org/) *and* [R-studio](https://www.rstudio.com/products/rstudio/download/)
-- Download the dataset "[Diamonds.csv](https://github.com/founderfan/Lecture-Introduction-of-R)"
+- Download the dataset "[Diamonds.csv](https://github.com/founderfan/Data-Open-Lecture)"
 - Be ready to typing in code!
-	 
 
 ## Our Goals
 	
@@ -23,7 +31,7 @@ output: html_presentation
 - Learn different data types in R to simplify operations
 	
 
-# What is R
+# 1.1 What is R
 ## What is R?
     
 - A language and environment for statistical computing and graphics
@@ -78,6 +86,7 @@ pnorm(2, mean = 0, sd = 1) # Distribution function (normal)
 dnorm(2, mean = 0, sd = 1) # Density function (normal)
 qnorm(0.975, mean = 0, sd = 1) # Quantile function (normal)
 ```
+
 - Generate random sample from a given distribution
 
 ```{r}
@@ -105,7 +114,7 @@ rbinom(20, size = 5, prob = 0.3) # Random sample (binomial)
 - From Google: Your Question + R
 
 
-# Vectorize Operation
+# 1.2 Vectorize Operation
 ## Vectors
 
 - Generate 5 random variables of uniform distribution between 0 and 1
@@ -116,6 +125,7 @@ x = runif(5, 0, 1)
 x
 x + 1
 ```
+
 - Generate continuous integers from 1 to 5
 
 ```{r}
@@ -135,6 +145,7 @@ x - y
 x * y
 x / y
 ```
+
 - Power and square root
 
 ```{r}
@@ -152,6 +163,7 @@ exp(x)
 log(x)
 log10(x)
 ```
+
 - Statistics
 
 ```{r}
@@ -169,6 +181,7 @@ c(median = median(x), minimum = min(x), maximum = max(x)) # named vector
 quantile(x)
 rank(x)
 ```
+
 - Round
 
 ```{r}
@@ -176,6 +189,7 @@ round(x, 3)
 floor(x)
 ceiling(x)
 ```
+
 - Sort
 
 ```{r}
@@ -192,6 +206,7 @@ x
 z = sort(x)
 z
 ```
+
 - Get the values of assigned positions from a vector
 
 ```{r}
@@ -257,7 +272,7 @@ people[pets != "fish"] # Who have a pet on the land?
 ```
 
 
-# Matrix, List and Data Frame
+# 1.3 Matrix, List and Data Frame
 ## Matrix (1)
 
 - Construct a matrix
@@ -331,7 +346,7 @@ data[2:4, 1:2] # Select rows and columns as a matrix
 ```
 
 
-## Marginal Apply}
+## Marginal Apply
 
 - apply: apply a function to a matrix by row/column
 
@@ -340,6 +355,7 @@ sum(m)
 apply(m, 1, sum) # Apply a function by row
 apply(m, 2, sum) # Apply a function by column
 ```
+
 - sapply: apply a function to a vector/list by element
 
 ```{r}
@@ -347,12 +363,12 @@ sapply(a, length) # Apply a function by list element
 sapply(data, length) # Apply a function by column of data frame 
 ```
 
+# Lecture 2. Basic Data Analysis
 
 
-# Basic Data Analysis
 ## Preparation
 
-- Download the dataset "[Diamonds.csv](https://github.com/founderfan/Lecture-Introduction-of-R)"
+- Download the dataset "[Diamonds.csv](https://github.com/founderfan/Data-Open-Lecture)"
 
 
 ## Our Goals
@@ -362,7 +378,7 @@ sapply(data, length) # Apply a function by column of data frame
 - Learn linear regression in R
 
 
-# Read and summarize data
+# 2.1 Read and summarize data
 ## Read Data
 Before reading data, we must set the working directory to find the data file:
 
@@ -444,6 +460,7 @@ data_clean = na.omit(data)
 dim(data_clean)
 sapply(data_clean, countNA)
 ```
+
 - Fill NA values with the median/mean/... of the column
 
 ```{r}
@@ -457,7 +474,7 @@ sapply(data, countNA)
 ```
 
 
-# Plot Data
+# 2.2 Plot Data
 ## Univariate Plot (1)
 
 - Visualize the distribution of numeric variables by histogram and density
@@ -498,8 +515,9 @@ plot(color ~ cut, data = data, col = rgb((1:7)/7, (7:1)/7, 1)) # area plot for b
 ```
 
 
-# Linear Regression
+# 2.3 Linear Regression
 ## Theory: Linear Regression
+
 Model: $Y_{n\times 1} = \beta_0 + X_{n\times p}\beta_{p\times 1} + \varepsilon_{n\times 1}$
 
 - $\varepsilon_{n\times 1}=(\varepsilon_1, \varepsilon_2, \cdots, \varepsilon_n)^T\sim^{iid} N(0,\sigma^2),\quad \sigma^2 > 0$
@@ -563,12 +581,14 @@ anova(model_step)
 model_interact = lm(price ~ carat * cut * color, data = data_clean)
 summary(model_interact)
 ```
+
 - Use "-" for deleting source (1 indicates intercept)
 
 ```{r, results = "hide"}
 model_reduced = lm(price ~ . - 1 - cut, data = data_clean)
 summary(model_reduced)
 ```
+
 - More transformation of numerical variables: cut, log, polynomial, ...
 
 ```{r, results = "hide"}
@@ -583,10 +603,10 @@ summary(model_poly_raw)
 ```
 
 
-# Data Visualization
+# Lecture 3. Data Visualization
 ## Preparation
 
-- Download the dataset "[Diamonds.csv](https://github.com/founderfan/Lecture-Introduction-of-R)"
+- Download the dataset "[Diamonds.csv](https://github.com/founderfan/Data-Open-Lecture)"
 
 
 ## Our Goals
@@ -596,8 +616,8 @@ summary(model_poly_raw)
 - Learn to plot with x, y and grouping variables in data.frame
 
 
-# Advanced R Plot: ggplot2
-## ggplot2}
+# 3.1 Advanced R Plot: ggplot2
+## ggplot2
 
 - Read data
 
@@ -675,7 +695,7 @@ p + geom_quantile(quantiles = c(0.25, 0.5, 0.75))
 ```
 
 
-# Plots for Different Variable Types
+# 3.2 Plots for Different Variable Types
 ## Univariate Plot (1): Discrete variable
 
 - Bar plot with geom_bar()
@@ -790,7 +810,7 @@ ggplot(data, aes(x = table, y = depth, z = price)) + stat_summary_2d(fun = sd)
 ```
 
 
-# Layouts}
+# 3.3 Layouts
 ## Axes, labels and themes
 
 - Transform and flip coordinate axes
@@ -830,10 +850,10 @@ p + facet_grid(cut ~ color, margins = TRUE)
 ```
 
 
-# Data Operation
+# Lecture 4. Data Operation
 ## Preparation
 
-- Download the [dataset](https://github.com/founderfan/Lecture-Introduction-of-R) "Diamonds.csv"
+- Download the [dataset](https://github.com/founderfan/Data-Open-Lecture) "Diamonds.csv"
 
 
 ## Our Goals
@@ -844,7 +864,7 @@ p + facet_grid(cut ~ color, margins = TRUE)
 - Learn how to use function/for/if and other structures in R working procedure
 
 
-# Data Table}
+# 4.1 Data Table
 ## Data Table: A Poweful Extension of Data Frame
 
 - Install by install.packages("data.table")
@@ -879,10 +899,11 @@ data[5:.N, list(n, unit_price = price/carat)]
 data[i = price > 1000, j = list(count = .N, carat = mean(carat)), by = list(cut)] 
 ```
 
-```{r}
+```{r, warning = F, message = F, echo = F}
 library(knitr)
 kable(data.frame(R = c("i", "j", "by"), SQL = c("WHERE", "SELECT", "GROUP BY")))
 ```
+
 - data.table is faster than R default, especially with big data
 
 ```{r}
@@ -923,8 +944,9 @@ data[,lapply(.SD, class), .SDcols = -c(2:5)]
 
 
 
-# Data Summarization
+# 4.2 Data Summarization
 ## Data Summarization
+
 Goal: Summarize the characters of many variables of big data
 
 - Amount of Information vs. Readability
@@ -1003,6 +1025,7 @@ for(i in 1:length(fL)){
     setkey(summaryL[[i]], rn)
 }
 ```
+
 - Merge a list of data.tables into one data.table with Reduce()
 
 ```{r}
@@ -1014,7 +1037,7 @@ write.csv(summary_data, "Rlecture_Diamonds_summary.csv", row.names = FALSE, na =
 ```
 
 
-# Data Cleaning
+# 4.3 Data Cleaning
 ## Why Data Cleaning
 
 - A key step to prepare big data for machine learning prediction
@@ -1142,10 +1165,10 @@ data_clean = data_clean[, lapply(.SD, function(x){qnorm((frank(x)-0.5)/length(x)
 ```
 
 
-# Network Analysis
+# Lecture 5. Network Analysis
 ## Preparation
 
-- Download the dataset "[Rlecture_data_facebook.txt](https://github.com/founderfan/Lecture-Introduction-of-R)"
+- Download the dataset "[Rlecture_data_facebook.txt](https://github.com/founderfan/Data-Open-Lecture)"
 
 
 ## Our Goals
@@ -1155,7 +1178,7 @@ data_clean = data_clean[, lapply(.SD, function(x){qnorm((frank(x)-0.5)/length(x)
 - Learn ERGM, a regression for network structure
 
 
-# Introduction to Network
+# 5.1 Introduction to Network
 ## Network Analysis
 
 - There are many kinds of networks in the society: classmates, friends, telephones, business transactions,...
@@ -1242,7 +1265,7 @@ igraphdemo("centrality")
 ```
 
 
-# Summarize Network
+# 5.2 Summarize Network
 ## Read Network Data
 
 - Data: A sample of 4000+ Facebook friends (mutual)
@@ -1263,7 +1286,7 @@ plot(datag_sub, vertex.size = 10, edge.arrow.size = 0.3)
 ```
 
 
-## Neighbour and Path}
+## Neighbour and Path
 
 - Neighbours: The set of vertices directly connected to a vertex
 
@@ -1348,7 +1371,7 @@ cor(vcentral[, -1, with = FALSE], method = "spearman") # Correlation matrix of r
 ```
 
 
-# Network Regression
+# 5.3 Network Regression
 ## Random Graph
 
 - Random graph: edges randomly generated with probability p
@@ -1447,10 +1470,11 @@ summary(model_ergm5)
 ```
 
 
-# R Introduction Review
+# Lecture 6. R Introduction Review
+
 ## Preparation
 
-- Download the dataset "[Diamonds.csv](https://github.com/founderfan/Lecture-Introduction-of-R)"
+- Download the dataset "[Diamonds.csv](https://github.com/founderfan/Data-Open-Lecture)"
 
 
 ## Our Goals
@@ -1459,7 +1483,7 @@ summary(model_ergm5)
 - Be familiar with package "data.table" and "ggplot2" in R data analysis
 
 
-# R Basic
+# 6.1 R Basic
 ## Vectors
 
 - Create vectors with different methods
@@ -1599,7 +1623,7 @@ sapply(data[,-2], sum)
 ```
 
 
-# R Data Description
+# 6.2 R Data Description
 ## Data Table: A Poweful Extension of Data Frame
 
 - Read data
@@ -1668,14 +1692,12 @@ data[, list(count = .N), by = list(carat = cut(carat, breaks = 3))]
 data[i = price > 1000, j = list(count = .N, mean = mean(carat), sd = sd(carat))]
 data[i = price > 1000, j = list(count = .N, mean = mean(carat), sd = sd(carat)), by = list(cut)]
 ```
+
 - Groupby functions in data.table, ggplot2 and SQL (a database language)
 
-\begin{tabular}{c|c c c}
-\hline
-    R (data.table) & i & j & by\\\hline
-    R (ggplot2) & & aes(x, y) & aes(color/fill/...)\\\hline
-    SQL & WHERE & SELECT & GROUP BY\\\hline
-\end{tabular}
+```{r, warning = F, message = F, echo = F}
+kable(data.frame(R = c("i", "j", "by"), ggplot2 = c("", "aes(x, y)", "aes(color/fill/...)"), SQL = c("WHERE", "SELECT", "GROUP BY")))
+```
 
 ## Column Apply in Data Table
 
@@ -1696,7 +1718,7 @@ data[,lapply(.SD, summary_num)]
 ```
 
 
-# R Linear Model
+# 6.3 R Linear Model
 ## Linear Model and Residuals
 
 - Build a linear model in R with lm(formula = ..., data)
@@ -1706,6 +1728,7 @@ options(na.action = 'na.exclude')
 model = lm(price ~ carat, data = data)
 summary(model)
 ```
+
 - Use plot for residual analysis
 
 ```{r warning=FALSE, message = FALSE, fig.height=5, fig.width=5}
@@ -1728,6 +1751,7 @@ summary(model_poly1)
 model_poly2 = lm(price ~ poly(carat, 3, raw = TRUE), data = data)
 summary(model_poly2)
 ```
+
 - Use ggplot to plot univariate linear models
 
 ```{r warning=FALSE, message = FALSE, fig.height=3, fig.width=4}
@@ -1748,6 +1772,7 @@ summary(model1)
 model2 = lm(price ~ carat*cut, data = data)
 summary(model2)
 ```
+
 - Use ANOVA to test the effect of multi variables in the linear model
 
 ```{r warning=FALSE, message = FALSE, fig.height=3, fig.width=4}
@@ -1763,6 +1788,7 @@ anova(model1)
 model_all = lm(price ~ . - n, data = data)
 summary(model_all)
 ```
+
 - Stepwise selection with both forward and backward method
 
 ```{r warning=FALSE, message = FALSE, fig.height=3, fig.width=4}
