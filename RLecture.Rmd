@@ -100,17 +100,13 @@ rbinom(20, size = 5, prob = 0.3) # Random sample (binomial)
 ## Get help
 
 - From R: ? + function
-    
-- ?rnorm
-- ?runif
-- ?lm
-- ?plot
-    
+    - ?rnorm
+    - ?runif
+    - ?lm
+    - ?plot
 - From Books: 
-    
-- The Art of R Programming, Norman Matloff
-- An Introduction to Statistical Learning with Applications in R, Gareth James
-    
+    - The Art of R Programming, Norman Matloff
+    - An Introduction to Statistical Learning with Applications in R, Gareth James
 - From Google: Your Question + R
 
 
@@ -860,12 +856,12 @@ p + facet_grid(cut ~ color, margins = TRUE)
 
 - Learn data operations simplified by [data.table](http://user014.stat.ucla.edu/files/tutorial_Matt.pdf)
 - Learn how to summarize information of variables for cleaning 
-- Learn to design steps for data cleaning in data table
+- Learn to design steps for data cleaning in data.table
 - Learn how to use function/for/if and other structures in R working procedure
 
 
-# 4.1 Data Table
-## Data Table: A Poweful Extension of Data Frame
+# 4.1 data.table
+## data.table: A Poweful Extension of Data Frame
 
 - Install by install.packages("data.table")
 
@@ -877,7 +873,7 @@ summary(data)
 ```
 
 
-## Take Subset from Data Table
+## Take Subset from data.table
 
 - Take subset like data.frame, but using list to contain variables
 
@@ -891,7 +887,7 @@ data[5:.N, list(n, unit_price = price/carat)]
 ```
 
 
-## Introduction of Data Table
+## Introduction of data.table
 
 - data.table has the form: data[i, j, by = ...] like SQL
 
@@ -912,7 +908,7 @@ system.time(fread("Diamonds.csv")) # timing (second): read csv with data.table
 ```
 
 
-## Sort Data Table
+## Sort data.table
 
 - Sort data by setkey()
 
@@ -928,7 +924,7 @@ data["Good", mult = "first"]
 ```
 
 
-## Column Apply in Data Table
+## Column Apply in data.table
 
 - Apply functions into each column with lapply and .SD
 
@@ -1048,24 +1044,9 @@ write.csv(summary_data, "Rlecture_Diamonds_summary.csv", row.names = FALSE, na =
     
 - Difficulty: the size and complexity of variables in data
 
-```{r}
-# data_big = fread("Rlecture_loan.csv")
-# str(data_big)
-# summary(data_big)
+```{r, echo = F, warning = F, message = F}
+kable(data.frame(Variable_Issue = c("Non-numeric", "Sparsity", "Collinearity", "Missing values", "Distribution Bias"), Example = c("a,b,c,d", "1,1,1,1", "1,2,3,4; 2,4,6,8", "1,NA,3,NA", "1,2,3,1000"), Model_Effect = c("Error", "Noise", "Robust loss", "Error", "Robust loss"), Test = c("Data Type", "Count Frequency", "Correlation Matrix", "Count NAs", "Numeric Statistics")))
 ```
-
-\begin{table}
-\footnotesize
-\begin{tabular}{c c c c}
-    Variable Problem & Example & Model Effect & Test\\
-    \hline
-    Non-numeric & characters, time & Error, Info loss & Data Type\\
-    Sparsity & Identical values & Noise & Count Frequency\\
-    Collinearity & Two similar variables& Instability & Correlation Matrix\\
-    NA values & NA, NA notations& Error & Count NAs\\
-    Distribution Bias & exponential, outliers & Instability & Numeric statistics
-\end{tabular}
-\end{table}
 
 ## Data Cleaning (1): Numeralization
 
@@ -1079,6 +1060,7 @@ setkey(data, "cut")
 op = data[mapDT]
 data[, cut := op[,V2]]
 ```
+
 - All other non-numeric variables $\rightarrow$ 0-1 dummy variables
 
 ```{r}
@@ -1624,7 +1606,7 @@ sapply(data[,-2], sum)
 
 
 # 6.2 R Data Description
-## Data Table: A Poweful Extension of Data Frame
+## data.table: A Poweful Extension of Data Frame
 
 - Read data
 
@@ -1684,7 +1666,7 @@ data[, list(count = .N), by = list(carat = cut(carat, breaks = 3))]
 ```
 
 
-## Groupby in Data Table
+## Groupby in data.table
 
 - data.table has the form: data[i, j, by = ...]
 
@@ -1699,7 +1681,7 @@ data[i = price > 1000, j = list(count = .N, mean = mean(carat), sd = sd(carat)),
 kable(data.frame(R = c("i", "j", "by"), ggplot2 = c("", "aes(x, y)", "aes(color/fill/...)"), SQL = c("WHERE", "SELECT", "GROUP BY")))
 ```
 
-## Column Apply in Data Table
+## Column Apply in data.table
 
 - Apply on each column in data.table with lapply(.SD, function)
 
