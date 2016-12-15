@@ -2,7 +2,9 @@
 title: "Data Open Lecture: An Introduction of R"
 author: "Fangda Fan"
 date: "Dec 2016"
-output: slidy_presentation
+output: 
+  slidy_presentation:
+    footer: "for the earth shall be full of the knowledge of the LORD as the waters cover the sea. (Isaiah 11:9 ESV)"
 ---
 
 ## Contents

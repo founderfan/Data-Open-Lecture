@@ -6,6 +6,7 @@
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta name="generator" content="pandoc" />
   <meta name="author" content="Fangda Fan" />
+  <meta name="copyright" content="for the earth shall be full of the knowledge of the LORD as the waters cover the sea. (Isaiah 11:9 ESV)" />
   <title>Data Open Lecture: An Introduction of R</title>
   <style type="text/css">code{white-space: pre;}</style>
   <style type="text/css">
@@ -1182,10 +1183,10 @@ data =<span class="st"> </span><span class="kw">fread</span>(<span class="st">&q
 </ul>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">system.time</span>(<span class="kw">read.csv</span>(<span class="st">&quot;Diamonds.csv&quot;</span>)) <span class="co"># timing (second): read csv with R default</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##    0.32    0.00    0.33</code></pre>
+##    0.24    0.00    0.24</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">system.time</span>(<span class="kw">fread</span>(<span class="st">&quot;Diamonds.csv&quot;</span>)) <span class="co"># timing (second): read csv with data.table</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##    0.21    0.00    0.22</code></pre>
+##    0.37    0.00    0.37</code></pre>
 </div><div id="sort-data.table" class="slide section level2">
 <h1>Sort data.table</h1>
 <ul>
