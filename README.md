@@ -2,12 +2,6 @@
 
 Lecture repository: Introduction to Data Analysis with R and Python
 
-## Course Info of Python Lecture
-
-- Location: Room 235, 1905 W Taylor
-- Time: 6pm - 8pm
-- Date: Dec 13 (Tue), 15 (Thu), 17 (Sat, 2pm - 4pm), 19 (Mon), 20 (Tue), 22 (Thu)
-
 ## Preparation
 
 ### For Python
